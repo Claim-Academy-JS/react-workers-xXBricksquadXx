@@ -1,8 +1,8 @@
-import { Table } from "./components";
-
+import { Form, Table } from "./components";
 function App() {
   return (
     <div>
+      <Form />
       <Table />
     </div>
   );
