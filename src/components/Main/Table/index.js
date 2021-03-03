@@ -1,11 +1,15 @@
 import api from "api";
+import PropTypes from "prop-types";
 import { useEffect, useReducer } from "react";
 import Row from "./Row";
 
+// Pure fxn.
 function reducer(state, { type, payload }) {
   switch (type) {
     case "init":
       return payload;
+    case "create":
+      return state.concat(payload);
     case "delete":
       return state.filter((_, index) => index !== payload - 1);
     default:
@@ -13,7 +17,7 @@ function reducer(state, { type, payload }) {
   }
 }
 
-const Table = () => {
+const Table = ({ name, job }) => {
   const [workers, dispatch] = useReducer(reducer, []);
 
   useEffect(() => {
@@ -24,6 +28,16 @@ const Table = () => {
       dispatch({ type: "init", payload: workersData });
     })();
   }, []);
+
+  useEffect(
+    () => {
+      if (name) {
+        dispatch({ type: "create", payload: { name, job: job || "N/A" } });
+      }
+    },
+    // Dependency Array - Only run this `useEffect` when one of these things (props) changes
+    [job, name]
+  );
 
   function handleClick(event) {
     dispatch({
@@ -55,5 +69,9 @@ const Table = () => {
     </table>
   );
 };
+
+Table.propTypes = { name: PropTypes.string, job: PropTypes.string };
+
+Table.defaultProps = { name: "", job: "" };
 
 export default Table;
