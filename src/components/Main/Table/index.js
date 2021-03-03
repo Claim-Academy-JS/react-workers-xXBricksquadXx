@@ -2,12 +2,12 @@ import api from "api";
 import { useEffect, useReducer } from "react";
 import Row from "./Row";
 
-function reducer(state, action) {
-  switch (action.type) {
+function reducer(state, { type, payload }) {
+  switch (type) {
     case "init":
-      return action.payload;
+      return payload;
     case "delete":
-      return state.filter((_, index) => index !== action.payload - 1);
+      return state.filter((_, index) => index !== payload - 1);
     default:
       console.error("Unmatched case!");
   }
@@ -19,6 +19,8 @@ const Table = () => {
   useEffect(() => {
     (async () => {
       const workersData = await api.index();
+
+      // `dispatch` only needs to know the action details (an object)
       dispatch({ type: "init", payload: workersData });
     })();
   }, []);
